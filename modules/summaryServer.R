@@ -1,5 +1,5 @@
 # Server functionality for the Summary module
-summaryServer <- function(id, stringsAsFactors, trends_or_summary)
+summary_server <- function(id, stringsAsFactors, trends_or_summary)
 {
   # Instantiate the server logic for this module
   moduleServer(
@@ -8,6 +8,12 @@ summaryServer <- function(id, stringsAsFactors, trends_or_summary)
     {
       # Create the namespace for the server module
       ns <- session$ns
+      
+      # Reactive output variable to determine whether the Summary UI should be visible
+      output$is_summary_visible <- reactive({
+        trends_or_summary() == "Summary"
+      })
+      outputOptions(output, "is_summary_visible", suspendWhenHidden = FALSE)
       
       # Reactive variable that stores a list of the available months
       available_months <- reactive({
@@ -18,7 +24,6 @@ summaryServer <- function(id, stringsAsFactors, trends_or_summary)
       # Update the UI with the list of available months
       observeEvent(trends_or_summary(),
                    {
-                     print(trends_or_summary())
                      if (trends_or_summary() == "Summary")
                      {
                        updateSelectInput(session, "select_month", "Select Month", available_months())
@@ -26,7 +31,7 @@ summaryServer <- function(id, stringsAsFactors, trends_or_summary)
                    })
       
       # Invoke the budget graph server logic
-      budgetGraphServer("budget_graph", FALSE, reactive(input$select_month))
+      budget_graph_server("budget_graph", FALSE, reactive(input$select_month))
     }
   )
 }

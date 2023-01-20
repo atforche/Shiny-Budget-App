@@ -47,7 +47,6 @@ get_ui_color_for_budget <- function(remaining, budget_amount, select_month)
   return("green")
 }
 
-
 #' Performs cleanup on the plot names for the budget plots
 #'
 #' @param budget_name The raw budget name from the budget table

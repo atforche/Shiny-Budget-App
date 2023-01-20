@@ -1,12 +1,13 @@
 # Define UI for application that visualizes current budget trends and summaries
 fluidPage(
   
-    # Reduce the bottom margin for plotly plots
     tags$head(
       tags$style(
+        # Reduce the bottom margin for plotly plots
         HTML(
         '.plotly { margin-bottom: -15px; }'
         ),
+        # Set up CSS classes for each text color needed
         HTML(
           '.red{ color:red; }'
         ),
@@ -16,6 +17,8 @@ fluidPage(
         HTML(
           '.green{ color:green; }'
         ),
+        # Allow popovers to cover the entire parent container (which is set
+        # to the HTML body in the Bootstrap settings)
         HTML(
           '.popover{ max-width: 100%; }'
         )
@@ -28,21 +31,6 @@ fluidPage(
     # Select whether to view summaries or trends
     selectInput("trend_or_summary", "Select View", c("Summary", "Trends")),
     
-    # First Row
-    fluidRow(
-      # First half of row
-      column(6,
-             
-        # Create the UI for the summary pane (if necessary)     
-        summaryUI("summary"),
-        
-        # Condition UI elements that only appear if viewing Trends
-        conditionalPanel(
-          condition = "input.trend_or_summary == 'Trends'",
-          
-          # Select what months to view trends over
-          
-        ) # conditionalPanel
-      ) # column
-    ) # fluidRow
+    # Create the UI for the summary pane (if the user has selected it)     
+    summary_ui("summary")
 )

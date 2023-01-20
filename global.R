@@ -14,8 +14,10 @@ library(tidyverse)
 source("loaders.R")
 source("helpers.R")
 
-source("modules//budgetGraphServer.R")
+# Budget graph module
 source("modules//budgetGraphUI.R")
+source("modules//budgetGraphServer.R")
 
+# Summary UI module
 source("modules//summaryUI.R")
 source("modules//summaryServer.R")
