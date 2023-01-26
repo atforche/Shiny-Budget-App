@@ -18,6 +18,10 @@ source("helpers.R")
 source("modules//budgetGraphUI.R")
 source("modules//budgetGraphServer.R")
 
+# Spending graph module
+source("modules//spendingGraphUI.R")
+source("modules//spendingGraphServer.R")
+
 # Summary UI module
 source("modules//summaryUI.R")
 source("modules//summaryServer.R")

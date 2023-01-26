@@ -12,7 +12,7 @@ fluidPage(
           '.red{ color:red; }'
         ),
         HTML(
-          '.yellow{ color:yellow; }'
+          '.orange{ color:orange; }'
         ),
         HTML(
           '.green{ color:green; }'

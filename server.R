@@ -5,5 +5,5 @@ function(input, output, session) {
   load_data()
 
   # Load server logic for the summary module
-  summary_server("summary", FALSE, reactive(input$trend_or_summary))
+  summary_server("summary", reactive(input$trend_or_summary))
 }

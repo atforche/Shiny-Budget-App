@@ -42,7 +42,7 @@ get_ui_color_for_budget <- function(remaining, budget_amount, select_month)
   progress_through_month <- get_progress_through_month(select_month)
   if (remaining < budget_amount - (budget_amount * progress_through_month))
   {
-    return("yellow")
+    return("orange")
   }
   return("green")
 }
@@ -56,4 +56,16 @@ clean_budget_plot_name <- function(budget_name)
 {
   cleaned_budget_name <- gsub(" ", "", budget_name)
   return(paste("budget", cleaned_budget_name, sep="_"))
+}
+
+
+#' Predicate that determines if a given date falls within the given month and year
+#'
+#' @param date Date to check
+#' @param month_year Date object with the month and year to validate against
+#'
+#' @return True if the date falls within the month and year, false otherwise
+is_date_in_month <- function(date, month_year)
+{
+  return(month(date) == month(month_year) & year(date) == year(month_year))
 }

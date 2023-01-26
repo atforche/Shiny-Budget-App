@@ -1,5 +1,5 @@
 # Server functionality for the Summary module
-summary_server <- function(id, stringsAsFactors, trends_or_summary)
+summary_server <- function(id, trends_or_summary)
 {
   # Instantiate the server logic for this module
   moduleServer(
@@ -31,7 +31,10 @@ summary_server <- function(id, stringsAsFactors, trends_or_summary)
                    })
       
       # Invoke the budget graph server logic
-      budget_graph_server("budget_graph", FALSE, reactive(input$select_month))
+      budget_graph_server("budget_graph", reactive(input$select_month))
+      
+      # Invoke the spending graph server logic
+      spending_graph_server("spending_graph", reactive(input$select_month))
     }
   )
 }

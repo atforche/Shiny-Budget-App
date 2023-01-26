@@ -1,5 +1,5 @@
 # Server functionality for the budget visualization graph module
-budget_graph_server <- function(id, stringsAsFactors, select_month)
+budget_graph_server <- function(id, select_month)
 {
   # Instantiate the server logic for this module
   moduleServer(
