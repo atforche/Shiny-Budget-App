@@ -36,9 +36,11 @@ spending_graph_server <- function(id, select_month)
 
         # Grab the transactions for the needed months
         transaction_table <- get_transaction_table() %>%
-          filter(is_date_in_month(Date, start_month))
+          filter(is_date_in_month(Date, start_month),
+                 Category != "Savings")
         previous_transactions <- get_transaction_table() %>%
-          filter(is_date_in_month(Date, start_previous_month))
+          filter(is_date_in_month(Date, start_previous_month),
+                 Category != "Savings")
                 
         # If the user selected a budget, only show that budget
         if (input$select_budget != "All") 
@@ -101,8 +103,6 @@ spending_graph_server <- function(id, select_month)
           left_join(previous_transactions, by="Date") %>%
           mutate(Difference = ifelse(Date > as.Date(now()), NA, Running.Total - Previous.Total),
                  Running.Total=ifelse(Date > as.Date(now()), NA, Running.Total))
-        
-        print(transaction_table, n=40)
 
         # Populate the spending graph
         ggplotly(

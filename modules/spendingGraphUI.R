@@ -6,14 +6,14 @@ spending_graph_ui <- function(id)
   
   tagList(
     
-    # Display a label for the budgets section
-    span(textOutput(ns("spending_label")), style="font-weight:bold;font-size:large"),
+    # Output for the budgets section label
+    span(textOutput(ns("spending_label")), style="font-weight:bold;font-size:x-large"),
     
     # Select which budget to view spending for, values will be populated by the summary server
     selectInput(ns("select_budget"), "Select Budget", ""),
     
     # Plot output to display spending graph
-    plotlyOutput(ns("spending_graph"), height=350)
+    plotlyOutput(ns("spending_graph"), height=375)
     
   ) #tagList
 }

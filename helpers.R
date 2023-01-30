@@ -29,33 +29,43 @@ get_progress_through_month <- function(select_month)
 #'
 #' @param remaining remaining amount for the budget this month
 #' @param budget_amount total amount budgeted for a budget
+#' @param budget_name name of the budget
 #' @param select_month current month selected in the select_month input
 #'
 #' @return the CSS class that should be used for the budget test
-get_ui_color_for_budget <- function(remaining, budget_amount, select_month)
+get_ui_color_for_budget <- function(remaining, budget_amount, budget_name, select_month)
 {
+  output_color <- ""
+  progress_through_month <- get_progress_through_month(select_month)
   if (remaining < 0)
   {
-    return("red")
+    output_color <- "red"
   }
-  
-  progress_through_month <- get_progress_through_month(select_month)
-  if (remaining < budget_amount - (budget_amount * progress_through_month))
+  else if (remaining < budget_amount - (budget_amount * progress_through_month))
   {
-    return("orange")
+    output_color <- "orange"
   }
-  return("green")
+  else
+  {
+    output_color <- "green"
+  }
+    
+  if (budget_name == "Savings")
+  {
+    return(ifelse(output_color == "red", "green", ifelse(output_color == "green", "red", output_color)))
+  }
+  return(output_color)
 }
 
-#' Performs cleanup on the plot names for the budget plots
+#' Performs cleanup on the plot names for any dynamic plots
 #'
-#' @param budget_name The raw budget name from the budget table
+#' @param name The raw name for the table
 #'
 #' @return The cleaned plot name as a string
-clean_budget_plot_name <- function(budget_name)
+clean_plot_name <- function(name)
 {
-  cleaned_budget_name <- gsub(" ", "", budget_name)
-  return(paste("budget", cleaned_budget_name, sep="_"))
+  cleaned_name <- gsub(" ", "", name)
+  return(paste("dynamic", cleaned_name, sep="_"))
 }
 
 

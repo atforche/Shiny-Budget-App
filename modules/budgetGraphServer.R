@@ -37,7 +37,7 @@ budget_graph_server <- function(id, select_month)
                          total_remaining <- budget_table$Remaining.Budget[budget_table$Name == budget_name][1]
                          
                          # Remove any existing popovers then create a new plotOutput with a popover
-                         plot_name <- clean_budget_plot_name(budget_name)
+                         plot_name <- clean_plot_name(budget_name)
                          if (graphs_populated)
                          {
                            removePopover(session, ns(plot_name))
@@ -46,8 +46,8 @@ budget_graph_server <- function(id, select_month)
                                 budget_name,
                                 HTML(str_interp(paste('Amount: ${label_dollar()(amount)}<br>',
                                                       'Total Spent: ${label_dollar()(total_spent)}<br>',
-                                                      'Monthly Remaining: <span class="${get_ui_color_for_budget(monthly_remaining, amount, select_month())}">${label_dollar()(monthly_remaining)}</span><br>',
-                                                      'Total Remaining: <span class="${get_ui_color_for_budget(total_remaining, amount, select_month())}">${label_dollar()(total_remaining)}</span>', sep=""))),
+                                                      'Monthly Remaining: <span class="${get_ui_color_for_budget(monthly_remaining, amount, budget_name, select_month())}">${label_dollar()(monthly_remaining)}</span><br>',
+                                                      'Total Remaining: <span class="${get_ui_color_for_budget(total_remaining, amount, budget_name, select_month())}">${label_dollar()(total_remaining)}</span>', sep=""))),
                                 placement="right",
                                 options=list(container="body"))
                        })
@@ -56,14 +56,14 @@ budget_graph_server <- function(id, select_month)
                        do.call(tagList, plot_output_list)
                      }) #renderUI
                      
-                    # After the plotOutputs are created, populate them with plots
+                     # After the plotOutputs are created, populate them with plots
                      for (budget in unique(budget_table$Name))
                      {
                        # Need a local context to prevent multithreaded variable thrashing
                        local({
                          local_budget_copy <- budget
-                         plot_name <- clean_budget_plot_name(local_budget_copy)
-                         budget_data <- budget_table %>% filter(Name == local_budget_copy)
+                         plot_name <- clean_plot_name(local_budget_copy)
+                         budget_data <- budget_table %>% filter(Name == local_budget_copy) %>% mutate(Monthly.Remaining = Amount - Total.Spent)
                          output[[plot_name]] <- renderPlot({
                            ggplot(budget_data,
                                   aes(
@@ -71,7 +71,7 @@ budget_graph_server <- function(id, select_month)
                                     ifelse(any(budget_data$Total.Spent > budget_data$Amount), budget_data$Amount, budget_data$Total.Spent),
                                     str_pad(budget_data$Name, 20, side="right"),
                                     fill=budget_data$Name)) +
-                             scale_fill_manual("legend", values = c(get_ui_color_for_budget(budget_data$Remaining.Budget[1], budget_data$Amount[1], select_month()))) +
+                             scale_fill_manual("legend", values = c(get_ui_color_for_budget(min(budget_data$Remaining.Budget[1], budget_data$Monthly.Remaining[1]), budget_data$Amount[1], budget_data$Name[1], select_month()))) +
                              xlim(0, budget_data$Amount[1]) +
                              geom_bar(stat="identity") +
                              geom_vline(xintercept = budget_data$Amount[1] * get_progress_through_month(select_month())) + # place a horizontal line at our approximate progress through the month

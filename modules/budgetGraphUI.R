@@ -6,8 +6,8 @@ budget_graph_ui <- function(id)
   
   tagList(
     
-    # Display a label for the budgets section
-    span(textOutput(ns("budget_label")), style="font-weight:bold;font-size:large"),
+    # Output for the budgets section label
+    span(textOutput(ns("budget_label")), style="font-weight:bold;font-size:x-large"),
     
     # Dynamic uiOutput to store individual graphs for each budget
     uiOutput(ns("budgets"))

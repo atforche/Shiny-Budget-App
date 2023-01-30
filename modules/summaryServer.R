@@ -30,6 +30,9 @@ summary_server <- function(id, trends_or_summary)
                      }
                    })
       
+      # Invoke the monthly summary server logic
+      monthly_summary_server("monthly_summary", reactive(input$select_month))
+      
       # Invoke the budget graph server logic
       budget_graph_server("budget_graph", reactive(input$select_month))
       

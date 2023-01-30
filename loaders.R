@@ -37,6 +37,7 @@ loaded_transaction_table <- NULL
 #' @return None
 load_transaction_table <- function()
 {
+  loaded_transaction_table <<- NULL
   for (sheet_name in get_worksheet_names())
   {
     if (is_data_sheet(sheet_name))
@@ -81,6 +82,7 @@ loaded_account_balance_table <- NULL
 #' @return None
 load_account_balance_table <- function()
 {
+  loaded_account_balance_table <<- NULL
   for (sheet_name in get_worksheet_names())
   {
     if (is_data_sheet(sheet_name))
@@ -146,6 +148,7 @@ loaded_income_table <- NULL
 #' @return None
 load_income_table <- function()
 {
+  loaded_income_table <<- NULL
   for (sheet_name in get_worksheet_names())
   {
     if (is_data_sheet(sheet_name))
@@ -190,6 +193,7 @@ loaded_budget_table <- NULL
 #' @return None
 load_budget_table <- function()
 {
+  loaded_budget_table <<- NULL
   for (sheet_name in get_worksheet_names())
   {
     if (is_data_sheet(sheet_name))

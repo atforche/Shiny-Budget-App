@@ -21,6 +21,19 @@ summary_ui <- function(id)
       # First Row
       fluidRow(
         
+        # Entire row
+        column(12,
+               
+           # Ui components for the monthly summary UI
+           monthly_summary_ui(ns("monthly_summary"))   
+           
+        ), # column
+        
+      style="padding-top:10px"),
+      
+      # Second Row
+      fluidRow(
+        
         # First half of row
         column(6,
            # Ui components for the budget graph UI
@@ -31,9 +44,9 @@ summary_ui <- function(id)
         column(6,
            # Ui components for the spending graph UI
           spending_graph_ui(ns("spending_graph"))       
-        ) # column
+        ), # column
         
-      ) # fluidRow
+      style="padding-top:10px") # fluidRow
     ) # conditionalPanel
   ) #tagList
 }
