@@ -29,3 +29,11 @@ source("modules//spendingGraphServer.R")
 # Summary UI module
 source("modules//summaryUI.R")
 source("modules//summaryServer.R")
+
+# Cash Flow module
+source("modules//cashFlowUI.R")
+source("modules//cashFlowServer.R")
+
+# Trends UI module
+source("modules//trendsUI.R")
+source("modules//trendsServer.R")

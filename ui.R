@@ -32,5 +32,8 @@ fluidPage(
     selectInput("trend_or_summary", "Select View", c("Summary", "Trends")),
     
     # Create the UI for the summary pane (if the user has selected it)     
-    summary_ui("summary")
+    summary_ui("summary"),
+    
+    # Create the UI for the trends pane (if the user has selected it)
+    trends_ui("trends")
 )

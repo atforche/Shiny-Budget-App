@@ -33,7 +33,7 @@ monthly_summary_ui <- function(id)
                  # Output for the net income display
                  htmlOutput(ns("net_income")),
                  
-                 # Output for the addition savings display
+                 # Output for the additional savings display
                  htmlOutput(ns("additional_savings")),
                  
                  # Popover to explain what Additional Savings are
@@ -42,7 +42,10 @@ monthly_summary_ui <- function(id)
                         paste("Additional savings refers to the money that we save on fixed monthly budgets plus any income we had over what we had budgeted.",
                               "This extra money can be treated as free savings and can be transferred into a savings account at the end of the month.",
                               "Running budgets do not count toward this number since any savings on those budgets automatically get rolled into the Reseve account and carried forward into next month"),
-                        placement="bottom")
+                        placement="bottom"),
+                 
+                 # Output for the change in reserve display
+                 htmlOutput(ns("change_in_reserve"))
                  
              ) # div
              

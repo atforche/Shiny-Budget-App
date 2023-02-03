@@ -36,18 +36,25 @@ summary_ui <- function(id)
         
         # First half of row
         column(6,
+               
            # Ui components for the budget graph UI
            budget_graph_ui(ns("budget_graph"))
+           
         ), # column
         
         # Second half of row
         column(6,
+               
            # Ui components for the spending graph UI
-          spending_graph_ui(ns("spending_graph"))       
+          spending_graph_ui(ns("spending_graph")) 
+          
         ), # column
         
-      style="padding-top:10px") # fluidRow
+      style="padding-top:10px")
+      
     ) # conditionalPanel
+    
   ) #tagList
+  
 }
 

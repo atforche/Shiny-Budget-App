@@ -46,6 +46,10 @@ load_transaction_table <- function()
       transaction_table <- load_excel_table(table_name, sheet_name)
       
       # Populate or concatenate the new transactions onto the existing transactions
+      if (nrow(transaction_table) == 0)
+      {
+        next
+      }
       if (is.null(loaded_transaction_table))
       {
         loaded_transaction_table <<- transaction_table
@@ -112,6 +116,10 @@ load_account_balance_table <- function()
         select(Date, everything())
       
       # Populate or concatenate the new balances onto the existing balances
+      if (nrow(balance_table) == 0)
+      {
+        next
+      }
       if (is.null(loaded_account_balance_table))
       {
         loaded_account_balance_table <<- balance_table
@@ -155,8 +163,12 @@ load_income_table <- function()
     {
       table_name <- paste("_", gsub("-", "_", sheet_name), "\\Income", sep="")
       income_table <- load_excel_table(table_name, sheet_name)
-      
+
       # Populate or concatenate the new transactions onto the existing transactions
+      if (nrow(income_table) == 0)
+      {
+        next
+      }
       if (is.null(loaded_income_table))
       {
         loaded_income_table <<- income_table
@@ -204,6 +216,10 @@ load_budget_table <- function()
         select(Date, everything())
       
       # Populate or concatenate the new transactions onto the existing transactions
+      if (nrow(budget_table) == 0)
+      {
+        next
+      }
       if (is.null(loaded_budget_table))
       {
         loaded_budget_table <<- budget_table

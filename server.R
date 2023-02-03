@@ -6,4 +6,7 @@ function(input, output, session) {
 
   # Load server logic for the summary module
   summary_server("summary", reactive(input$trend_or_summary))
+  
+  # Load server logic for the trends module
+  trends_server("trends", reactive(input$trend_or_summary))
 }

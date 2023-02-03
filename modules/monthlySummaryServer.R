@@ -45,8 +45,19 @@ monthly_summary_server <- function(id, select_month)
         # Get how much income we had compared to what we had budgeted
         total_budgeted_income <- sum(budget_table$Amount)
         total_actual_income <- sum(income_table$Amount)
-        
+
         sum(non_running_budget_table$Monthly.Savings) + (total_actual_income - total_budgeted_income)
+      })
+      
+      # Reactive variable to store the change in Reserve balance for the month
+      change_in_reserve <- reactive({
+        
+        budget_table <- get_budget_table() %>%
+          filter(is_date_in_month(Date, get_current_month_as_date(select_month()))) %>%
+          filter(Type == "Rolling") %>%
+          mutate(Monthly.Change = Amount - Total.Spent)
+        
+        sum(budget_table$Monthly.Change)
       })
       
       # Reactive variable to store the most recent set of each account balance
@@ -161,6 +172,11 @@ monthly_summary_server <- function(id, select_month)
         HTML(str_interp("Additional Savings: <span class=\"${ifelse(additional_savings() < 0, 'red', 'green')}\">${label_dollar()(additional_savings())}</span>"))
       })
       
+      # Populate the change in reserve display
+      output$change_in_reserve <- renderText({
+        HTML(str_interp("Change in Reserve Balance: <span class=\"${ifelse(change_in_reserve() < 0, 'red', 'green')}\">${label_dollar()(change_in_reserve())}</span>"))
+      })
+      
       # Populate the asset text label
       output$asset_label <- renderText({
         "Assets"
@@ -232,7 +248,6 @@ monthly_summary_server <- function(id, select_month)
 
                          # Remove any existing popovers then create a new plotOutput with a popover
                          plot_name <- clean_plot_name(balance_name)
-                         print(plot_name)
                          htmlOutput(ns(plot_name))
                        })
                        
@@ -247,7 +262,6 @@ monthly_summary_server <- function(id, select_month)
                        local({
                          local_balance_copy <- balance
                          plot_name <- clean_plot_name(local_balance_copy)
-                         print(plot_name)
                          balance <- balance_table %>% filter(Name == local_balance_copy)
                          output[[plot_name]] <- renderText({
                             HTML(str_interp("${local_balance_copy}: ${label_dollar()(balance$Balance)}"))
