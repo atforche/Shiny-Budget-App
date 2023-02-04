@@ -132,10 +132,13 @@ cash_flow_server <- function(id, select_range)
       output$cash_flow_graph <- renderPlotly({
         ggplotly(
           ggplot(graph_values(), aes(Month, Value, 
-                                   text=paste0("Month: ", Month, 
-                                               "<br>", input$cash_flow_type, ": <span style='color:", ifelse(Value > 0,"green","red"), "'>", label_dollar()(Value), "</span>",
-                                               "<br>Average: ", label_dollar()(average_value()),
-                                               "<br>Difference: <span style='color:", ifelse(Value > average_value(),"green","red"), "'>", label_dollar()(Value - average_value()), "</span>"), 
+                                   text=paste0("<span style='font-size:medium'>",
+                                               "<b>Month:</b> ", Month, 
+                                               "<br><b>", input$cash_flow_type, ":</b> <span style='color:", ifelse(Value > 0,"green","red"), "'>", label_dollar()(Value), "</span>",
+                                               "<br>",
+                                               "<br><b>Average ", input$cash_flow_type, ":</b> ", label_dollar()(average_value()),
+                                               "<br><b>Difference From Average:</b> <span style='color:", ifelse(Value > average_value(),"green","red"), "'>", label_dollar()(Value - average_value()), "</span>",
+                                               "</span>"), 
                                    fill=ifelse(Value > 0, "positive", "negative")))
           + geom_col()
           + geom_hline(yintercept=average_value())
@@ -144,9 +147,10 @@ cash_flow_server <- function(id, select_range)
           + theme(legend.position = "none",
                   axis.title.y = element_blank()),
           tooltip="text") %>%
+          style(hoverlabel = list(bgcolor="white")) %>%
           layout(xaxis = list(fixedrange = TRUE), 
                  yaxis = list(fixedrange = TRUE),
-                 hovermode="x unified")
+                 hovermode="x")
       })
     }
   )

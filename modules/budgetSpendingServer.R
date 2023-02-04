@@ -63,24 +63,28 @@ budget_spending_server <- function(id, select_range)
       # Populate the budget_spending graph with the plot
       output$budget_spending_graph <- renderPlotly({
         ggplotly(
-          ggplot(budget_spending())
-          + geom_col(aes(Month, Spending, 
-                         text=paste0("Month: ", Month,
-                                     "<br>Total Spending: ", label_dollar()(Spending),
-                                     "<br>Total Budgeted :", label_dollar()(Budget),
-                                     "<br>Difference: <span style='color:", ifelse(Spending < Budget,"green","red"), "'>", label_dollar()(Spending - Budget), "</span>",
-                                     "<br>Average Spending: ", label_dollar()(average_budget_spending()),
-                                     "<br>Difference From Average: <span style='color:", ifelse(Spending < average_budget_spending(),"green","red"), "'>", label_dollar()(Spending - average_budget_spending()), "</span>"),
-                         fill=ifelse(Spending > Budget, "negative", "positive")))
+          ggplot(budget_spending(), aes(Month, Spending, 
+                                        text=paste0("<span style='font-size:medium'>",
+                                                    "<b>Month:</b> ", Month,
+                                                    "<br><b>Total Spending:</b> ", label_dollar()(Spending),
+                                                    "<br><b>Total Budgeted:</b> ", label_dollar()(Budget),
+                                                    "<br><b>Difference:</b> <span style='color:", ifelse(Spending <= Budget,"green","red"), "'>", label_dollar()(Spending - Budget), "</span>",
+                                                    "<br>",
+                                                    "<br><b>Average Spending:</b> ", label_dollar()(average_budget_spending()),
+                                                    "<br><b>Difference From Average:</b> <span style='color:", ifelse(Spending <= average_budget_spending(),"green","red"), "'>", label_dollar()(Spending - average_budget_spending()), "</span>",
+                                                    "</span>"),
+                                        fill=ifelse(Spending <= Budget, "positive", "negative")))
+          + geom_col()
           + geom_hline(yintercept=average_budget_spending())
           + scale_y_continuous(labels=label_dollar())
           + scale_fill_manual(values=c("positive"="green2", "negative"="red2"))
           + theme(legend.position = "none",
                   axis.title.y = element_blank()),
           tooltip="text") %>%
+          style(hoverlabel = list(bgcolor="white")) %>%
           layout(xaxis = list(fixedrange = TRUE), 
                  yaxis = list(fixedrange = TRUE),
-                 hovermode="x unified")
+                 hovermode="x")
       })
       
     }
