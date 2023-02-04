@@ -14,6 +14,9 @@ trends_server <- function(id, trends_or_summary)
       
       # Invoke the cash flow server logic
       cash_flow_server("cash_flow", reactive(input$select_range))
+      
+      # Invoke the budget spending server logic
+      budget_spending_server("budget_spending", reactive(input$select_range))
     }
   )
 }

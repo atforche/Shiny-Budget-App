@@ -34,6 +34,10 @@ source("modules//summaryServer.R")
 source("modules//cashFlowUI.R")
 source("modules//cashFlowServer.R")
 
+# Budget Spending module
+source("modules//budgetSpendingUI.R")
+source("modules//budgetSpendingServer.R")
+
 # Trends UI module
 source("modules//trendsUI.R")
 source("modules//trendsServer.R")

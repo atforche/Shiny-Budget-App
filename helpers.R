@@ -68,7 +68,6 @@ clean_plot_name <- function(name)
   return(paste("dynamic", cleaned_name, sep="_"))
 }
 
-
 #' Predicate that determines if a given date falls within the given month and year
 #'
 #' @param date Date to check
@@ -78,4 +77,31 @@ clean_plot_name <- function(name)
 is_date_in_month <- function(date, month_year)
 {
   return(month(date) == month(month_year) & year(date) == year(month_year))
+}
+
+#' Gets the earliest date that occurs in a given date range
+#'
+#' @param select_range the Date range the user has selected in the UI
+#'
+#' @return the earliest date that belongs to the selected date range
+get_earliest_date_in_range <- function(select_range)
+{
+  # If the selected range is All Time, just return the origin date
+  if (select_range == "All Time")
+  {
+    return(.Date(0))
+  }
+  
+  date <- as.Date(now())
+  if (select_range == "Past Six Months")
+  {
+    date <- date %m-% months(6)
+  }
+  else if (select_range == "Past Year")
+  {
+    date <- date %m-% months(12) 
+  }
+  
+  # Get the first date of that month
+  floor_date(date, 'month')
 }

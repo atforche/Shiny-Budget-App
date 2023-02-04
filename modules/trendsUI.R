@@ -30,6 +30,14 @@ trends_ui <- function(id)
                
         ), # column
         
+        # Second half or row
+        column(6,
+         
+          # UI components for the budget spending graph
+          budget_spending_ui(ns("budget_spending"))
+                     
+        ),
+        
         style="padding-top:10px")
       
     ) # conditionalPanel

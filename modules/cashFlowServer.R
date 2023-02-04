@@ -8,31 +8,12 @@ cash_flow_server <- function(id, select_range)
     {
       # Populate the cash flow text label
       output$cash_flow_label <- renderText({
-        first_date()
         "Cash Flow by Month"
       })
       
       # Reactive variable to store the first date that we care about
       first_date <- reactive({
-        
-        # If the selected range is All Time, just return the origin date
-        if (select_range() == "All Time")
-        {
-          return(.Date(0))
-        }
-        
-        date <- as.Date(now())
-        if (select_range() == "Past Six Months")
-        {
-          date <- date %m-% months(6)
-        }
-        else if (select_range() == "Past Year")
-        {
-          date <- date %m-% months(12) 
-        }
-        
-        # Get the first date of that month
-        floor_date(date, 'month')
+        get_earliest_date_in_range(select_range())
       })
       
       # Reactive variable to store the net income across the months in the given range
