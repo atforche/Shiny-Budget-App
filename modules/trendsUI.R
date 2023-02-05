@@ -38,6 +38,19 @@ trends_ui <- function(id)
                      
         ),
         
+        style="padding-top:10px"),
+      
+      # Second Row
+      fluidRow(
+        
+        # First half of row
+        column(6,
+               
+               # UI components for the balance history graph
+               balance_history_ui(ns("balance_history"))
+               
+        ), # column
+        
         style="padding-top:10px")
       
     ) # conditionalPanel

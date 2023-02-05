@@ -17,6 +17,9 @@ trends_server <- function(id, trends_or_summary)
       
       # Invoke the budget spending server logic
       budget_spending_server("budget_spending", reactive(input$select_range))
+      
+      # Invoke the balance history server logic
+      balance_history_server("balance_history", reactive(input$select_range))
     }
   )
 }

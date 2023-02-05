@@ -38,6 +38,10 @@ source("modules//cashFlowServer.R")
 source("modules//budgetSpendingUI.R")
 source("modules//budgetSpendingServer.R")
 
+# Balance History module
+source("modules//balanceHistoryUI.R")
+source("modules//balanceHistoryServer.R")
+
 # Trends UI module
 source("modules//trendsUI.R")
 source("modules//trendsServer.R")

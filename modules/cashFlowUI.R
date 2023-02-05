@@ -9,7 +9,7 @@ cash_flow_ui <- function(id)
     # Output for the cash flow label
     span(textOutput(ns("cash_flow_label")), style="font-weight:bold;font-size:x-large"),
     
-    # Select which range of months to view
+    # Select which metric to view
     selectInput(ns("cash_flow_type"), "Select Metric to View", 
                 c("Net Income", "Actual Savings", "Change In Reserve Balance")),
     

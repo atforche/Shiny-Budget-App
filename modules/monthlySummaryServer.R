@@ -80,14 +80,13 @@ monthly_summary_server <- function(id, select_month)
           most_recent_monday <- most_recent_monday - 7 
         }
         
-        # Find the set of balances that 
+        # Find the set of balances that were entered for that Monday
         account_balances <- account_balances %>%
           filter(Date == most_recent_monday)
       })
       
       # Reactive variable to store the most recent amount of retirement assets for this month
       retirement_assets <- reactive({
-        req(balances())
         account_balances <- balances() %>% filter(Category == "Retirement")
         sum(account_balances$Balance)
       })
