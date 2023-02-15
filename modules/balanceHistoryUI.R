@@ -6,7 +6,7 @@ balance_history_ui <- function(id)
   
   tagList(
     
-    # Output for the cash flow label
+    # Output for the balance history label
     span(textOutput(ns("balance_history_label")), style="font-weight:bold;font-size:x-large"),
     
     # Select which balance to view

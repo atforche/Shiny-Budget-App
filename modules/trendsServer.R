@@ -20,6 +20,9 @@ trends_server <- function(id, trends_or_summary)
       
       # Invoke the balance history server logic
       balance_history_server("balance_history", reactive(input$select_range))
+      
+      # Invoke the debt history server logic
+      debt_history_server("debt_history", reactive(input$select_range))
     }
   )
 }

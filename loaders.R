@@ -1,6 +1,57 @@
 # Global variable to cache the Excel workbook
 loaded_workbook <- NULL
 
+#' Attempts to grab the most recent version of the budget workbook
+#'
+#' Tries to copy the master budget workbook from the specified location into the
+#' local application directory. If an error occurs, an error will not be thrown.
+#' Instead, the error message will be returned.
+#'
+#' @return the error message that occurs when updating the workbook, or a blank string
+update_workbook <- function()
+{
+  master_workbook_location <- "C:\\Users\\atfor\\OneDrive\\Desktop\\Finances\\Monthly Budget Tracking.xlsm"
+  local_workbook_location <- "res\\data.xlsm"
+  
+  existing_temp_name <- "res\\old.xlsm"
+  new_temp_name <- "res\\new.xlsm"
+
+  # Copy the master workbook to the res directory
+  if (!file.copy(master_workbook_location, new_temp_name, overwrite=TRUE))
+  {
+    return("Unable to copy master file.")
+  }
+
+  # Rename the existing workbook to a temp name
+  if (!file.rename(local_workbook_location, existing_temp_name))
+  {
+    return("Unable to rename existing file.") 
+  }
+
+  # Rename the new workbook to the name the application expects
+  if (!file.rename(new_temp_name, local_workbook_location))
+  {
+    return("Unable to rename new file.")
+  }
+
+  # Delete the now obsolete old workbook
+  if (!file.remove(existing_temp_name))
+  {
+    return("Unable to delete old file.")
+  }
+
+  return("")
+}
+
+#' Gets the date and time of the most recent update to the data
+#'
+#' @return the date time of the last data update
+get_last_updated_date <- function()
+{
+  local_workbook_location <- "res\\data.xlsm"
+  return(toString(file.info(local_workbook_location)$ctime))
+}
+
 #' Load an Excel workbook
 #'
 #' Loads the Excel workbook found at the end of the file path and caches the 
@@ -313,7 +364,13 @@ get_worksheet_names <- function()
 #' @return None
 load_data <- function()
 {
-  load_excel_workbook("Monthly Budget Tracking.xlsm")
+  update_error <- update_workbook()
+  if (update_error != "")
+  {
+    toastr_error(update_error)
+  }
+  
+  load_excel_workbook("res\\data.xlsm")
   
   load_transaction_table()
   load_account_balance_table()

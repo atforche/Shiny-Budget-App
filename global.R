@@ -10,6 +10,8 @@ library(plotly)
 library(scales)
 library(shiny)
 library(shinyBS)
+library(shinyjs)
+library(shinytoastr)
 library(tidyverse)
 source("loaders.R")
 source("helpers.R")
@@ -41,6 +43,10 @@ source("modules//budgetSpendingServer.R")
 # Balance History module
 source("modules//balanceHistoryUI.R")
 source("modules//balanceHistoryServer.R")
+
+# Debt History module
+source("modules//debtHistoryUI.R")
+source("modules//debtHistoryServer.R")
 
 # Trends UI module
 source("modules//trendsUI.R")

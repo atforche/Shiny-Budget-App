@@ -51,6 +51,14 @@ trends_ui <- function(id)
                
         ), # column
         
+        # Second half of row
+        column(6,
+               
+               # UI components for the debt history graph
+               debt_history_ui(ns("debt_history"))
+               
+        ), # column
+        
         style="padding-top:10px")
       
     ) # conditionalPanel

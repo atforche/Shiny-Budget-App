@@ -45,7 +45,10 @@ monthly_summary_ui <- function(id)
                         placement="bottom"),
                  
                  # Output for the change in reserve display
-                 htmlOutput(ns("change_in_reserve"))
+                 htmlOutput(ns("change_in_reserve")),
+                 
+                 # Output for the change in saving display
+                 htmlOutput(ns("change_in_savings"))
                  
              ) # div
              

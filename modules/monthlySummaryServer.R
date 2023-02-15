@@ -60,6 +60,17 @@ monthly_summary_server <- function(id, select_month)
         sum(budget_table$Monthly.Change)
       })
       
+      # Reactive variable to store the change in Savings balance for the month
+      change_in_savings <- reactive({
+        
+        budget_table <- get_budget_table() %>%
+          filter(is_date_in_month(Date, get_current_month_as_date(select_month()))) %>%
+          filter(Type == "Saving") %>%
+          mutate(Monthly.Change = Total.Spent)
+        
+        sum(budget_table$Monthly.Change)
+      })
+      
       # Reactive variable to store the most recent set of each account balance
       balances <- reactive({
         
@@ -174,6 +185,11 @@ monthly_summary_server <- function(id, select_month)
       # Populate the change in reserve display
       output$change_in_reserve <- renderText({
         HTML(str_interp("Change in Reserve Balance: <span class=\"${ifelse(change_in_reserve() < 0, 'red', 'green')}\">${label_dollar()(change_in_reserve())}</span>"))
+      })
+      
+      # Populate the change in savings display
+      output$change_in_savings <- renderText({
+        HTML(str_interp("Change in Saving Balance: <span class=\"${ifelse(change_in_savings() < 0, 'red', 'green')}\">${label_dollar()(change_in_savings())}</span>"))
       })
       
       # Populate the asset text label

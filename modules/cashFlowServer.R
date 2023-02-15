@@ -96,6 +96,26 @@ cash_flow_server <- function(id, select_range)
         average <- mean(average_change$Value)
       })
       
+      # Reactive variable to store the change in savings balance across the months in the given range
+      change_in_savings_balance <- reactive({
+        budget_table <- get_budget_table() %>%
+          filter(Date >= first_date(),
+                 Type == "Saving") %>%
+          mutate(Month = floor_date(Date, 'month'),
+                 Monthly.Change = Total.Spent) %>%
+          group_by(Month) %>%
+          summarize(Value = sum(Monthly.Change))
+      })
+      
+      # Reactive variable to store the average change in savings balance across the months in the given range
+      average_change_in_savings_balance <- reactive({
+        
+        # Calculate the average change in savings balance for every month except the current month
+        average_change <- change_in_savings_balance() %>%
+          filter(!is_date_in_month(Month, as.Date(now())))
+        average <- mean(average_change$Value)
+      })
+      
       # Reactive variable to store the graph data that should appear based on the users selection
       graph_values <- reactive({
         if (input$cash_flow_type == "Net Income")
@@ -109,6 +129,10 @@ cash_flow_server <- function(id, select_range)
         else if (input$cash_flow_type == "Change In Reserve Balance")
         {
           return(change_in_reserve_balance())
+        }
+        else if (input$cash_flow_type == "Change In Savings Balance")
+        {
+          return(change_in_savings_balance())
         }
       })
       
@@ -125,6 +149,10 @@ cash_flow_server <- function(id, select_range)
         else if (input$cash_flow_type == "Change In Reserve Balance")
         {
           return(average_change_in_reserve_balance())
+        }
+        else if (input$cash_flow_type == "Change In Savings Balance")
+        {
+          return(average_change_in_savings_balance())
         }
       })
       

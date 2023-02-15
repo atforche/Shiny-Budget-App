@@ -1,6 +1,12 @@
 # Define UI for application that visualizes current budget trends and summaries
 fluidPage(
   
+    # Enable toaster messages
+    useToastr(),
+    
+    # Enable arbitrary JS
+    shinyjs::useShinyjs(),
+  
     tags$head(
       tags$style(
         # Reduce the bottom margin for plotly plots
@@ -25,8 +31,43 @@ fluidPage(
       )
     ),
 
-    # Application title
-    titlePanel("Noodle and Bean Budgets"),
+    # Top row of application
+    fluidRow(
+      
+      # Main Column
+      column(9,
+             
+         # Application title
+         titlePanel("Noodle and Bean Budgets")
+             
+       ), # column
+      
+      # Second column
+      column(2,
+             
+        div(
+          
+          # Last updated display
+          htmlOutput("last_updated"),
+          
+        style="padding-top:15px") # div
+             
+      ), # column
+      
+      # Third column
+      column(1,
+             
+         div(
+           
+           # Refresh button
+           actionButton("refresh_button", "Refresh Data"),
+           
+         style="padding-top:10px") # div
+             
+      ) # column
+      
+    ), # Fluid row
+    
 
     # Select whether to view summaries or trends
     selectInput("trend_or_summary", "Select View", c("Summary", "Trends")),

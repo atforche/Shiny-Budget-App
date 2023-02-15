@@ -1,4 +1,4 @@
-# Server functionality for the Cash Flow module
+# Server functionality for the Balance History module
 balance_history_server <- function(id, select_range)
 {
   # Instantiate the server logic for this module
