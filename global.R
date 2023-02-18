@@ -1,7 +1,11 @@
 # Set the working directory
 setwd("C:\\Users\\atfor\\OneDrive\\Desktop\\Budget_Shiny_App")
 
-# Global imports for the application
+# Expected locations for the Excel workbooks
+master_workbook_location <- "C:\\Users\\atfor\\OneDrive\\Desktop\\Finances\\Monthly Budget Tracking.xlsm"
+local_workbook_location <- "res\\data.xlsm"
+
+# Imports for the application
 library(data.table)
 library(ggplot2)
 library(lubridate)

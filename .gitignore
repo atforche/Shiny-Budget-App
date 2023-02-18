@@ -2,4 +2,6 @@
 .Rhistory
 *.xlsm
 .Rproj.user
-
+res/data.xlsm
+"res/Monthly Budget Tracking.xlsm"
+!res/template.xlsm

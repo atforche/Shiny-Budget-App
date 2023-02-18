@@ -10,9 +10,7 @@ loaded_workbook <- NULL
 #' @return the error message that occurs when updating the workbook, or a blank string
 update_workbook <- function()
 {
-  master_workbook_location <- "C:\\Users\\atfor\\OneDrive\\Desktop\\Finances\\Monthly Budget Tracking.xlsm"
-  local_workbook_location <- "res\\data.xlsm"
-  
+  # Temporary file names used by the copying process
   existing_temp_name <- "res\\old.xlsm"
   new_temp_name <- "res\\new.xlsm"
 
@@ -48,15 +46,14 @@ update_workbook <- function()
 #' @return the date time of the last data update
 get_last_updated_date <- function()
 {
-  local_workbook_location <- "res\\data.xlsm"
-  return(toString(file.info(local_workbook_location)$ctime))
+  return(toString(file.info(local_workbook_location)$mtime))
 }
 
 #' Load an Excel workbook
 #'
 #' Loads the Excel workbook found at the end of the file path and caches the 
 #' workbook for further use
-#' @param filename the file path pointing to the Excel file, can be absolute or relative
+#' @param filename the file path pointing to the Excel file
 #'
 #' @return None
 load_excel_workbook <- function(filename)
@@ -323,7 +320,6 @@ load_excel_table <- function(table_name, sheet_name)
   stop(str_interp("Specified table \"${table_name}\" not found on sheet \"${sheet_name}\""))
 }
 
-
 #' Gets a list of dates that represent every Monday in a month
 #'
 #' @param year an integer representing the year
@@ -370,7 +366,7 @@ load_data <- function()
     toastr_error(update_error)
   }
   
-  load_excel_workbook("res\\data.xlsm")
+  load_excel_workbook(local_workbook_location)
   
   load_transaction_table()
   load_account_balance_table()
