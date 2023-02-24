@@ -45,10 +45,11 @@ spending_graph_server <- function(id, select_month)
         # If the user selected a budget, only show that budget
         if (input$select_budget != "All") 
         {
+          browser()
           transaction_table <- transaction_table %>%
-            filter(Name == input$select_budget())
+            filter(Category == input$select_budget)
           previous_transactions <- previous_transactions %>%
-            filter(Name == input$select_budget())
+            filter(Category == input$select_budget)
         }
         
         # Calculate the running totals
