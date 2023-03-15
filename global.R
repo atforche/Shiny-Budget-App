@@ -5,6 +5,10 @@ local_workbook_location <- "res/data.xlsm"
 # Set up plotly graphing to work on Linux
 options(bitmapType='cairo')
 
+# Paths to the local caches
+local_date_cache <- "res/last_modified.rds"
+local_data_cache <- "res/cached_data.RData"
+
 # Imports for the application
 library(data.table)
 library(ggplot2)

@@ -1,8 +1,19 @@
 # Define server logic for application that visualizes current budget trends and summaries
 function(input, output, session) {
   
-  # Load all the necessary data from the Excel workbook
-  load_data()
+  # Load all the necessary data from the Excel workbook or the local caches
+  if (need_to_update_workbook())
+  {
+    load_data()
+    # Cache the newly loaded workbook so it's available in the future
+    saveRDS(get_last_updated_date(FALSE), local_date_cache)
+    save(loaded_workbook, loaded_transaction_table, loaded_account_balance_table, loaded_income_table, loaded_budget_table, file=local_data_cache)
+  }
+  else
+  {
+    load(local_data_cache)
+    toastr_success("No new changes. Loaded stored workbook")
+  }
   
   # Populate the last updated text display
   output$last_updated <- renderText({

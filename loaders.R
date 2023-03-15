@@ -1,6 +1,32 @@
 # Global variable to cache the Excel workbook
 loaded_workbook <- NULL
 
+#' Checks to see if an updated version of the Excel workbook is available to grab
+#'
+#' @return True if an updated version of the workbook is available, false otherwise
+need_to_update_workbook <- function()
+{
+  # Check to see if the master workbook path is reachable
+  if (!file.exists(master_workbook_location))
+  {
+    return(FALSE)
+  }
+  
+  # Now check to see if both the caches are intact
+  if (!file.exists(local_date_cache) || !file.exists(local_data_cache))
+  {
+    return(TRUE)
+  }
+  
+  # Compare our last modified date
+  last_modified_date <- as_datetime(readRDS(file=local_date_cache))
+  if (last_modified_date == force_tz(file.info(master_workbook_location)$mtime, "UTC"))
+  {
+    return(FALSE)
+  }
+  return(TRUE)
+}
+
 #' Attempts to grab the most recent version of the budget workbook
 #'
 #' Tries to copy the master budget workbook from the specified location into the
@@ -52,9 +78,13 @@ update_workbook <- function()
 #' Gets the date and time of the most recent update to the data
 #'
 #' @return the date time of the last data update
-get_last_updated_date <- function()
+get_last_updated_date <- function(local_workbook = TRUE)
 {
-  return(toString(file.info(local_workbook_location)$mtime))
+  if (local_workbook)
+  {
+    return(toString(file.info(local_workbook_location)$mtime))
+  }
+  return(toString(file.info(master_workbook_location)$mtime))
 }
 
 #' Load an Excel workbook
@@ -373,7 +403,7 @@ load_data <- function()
   {
     toastr_error(update_error)
   }
-  
+
   load_excel_workbook(local_workbook_location)
   
   load_transaction_table()

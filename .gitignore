@@ -1,5 +1,6 @@
-.RData
+*.RData
 .Rhistory
+*.rds
 *.xlsm
 .Rproj.user
 res/data.xlsm
