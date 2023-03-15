@@ -2,8 +2,12 @@
 setwd("C:\\Users\\atfor\\OneDrive\\Desktop\\Budget_Shiny_App")
 
 # Expected locations for the Excel workbooks
-master_workbook_location <- "C:\\Users\\atfor\\OneDrive\\Desktop\\Finances\\Monthly Budget Tracking.xlsm"
+master_workbook_location <- "C:\\Users\\atfor\\OneDrive\\Desktop\\Shared\\Monthly Budget Tracking.xlsm"
 local_workbook_location <- "res\\data.xlsm"
+
+# Paths to the local caches
+local_date_cache <- "res\\last_modified.rds"
+local_data_cache <- "res\\cached_data.RData"
 
 # Imports for the application
 library(data.table)
