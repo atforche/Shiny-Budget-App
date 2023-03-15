@@ -37,12 +37,20 @@ need_to_update_workbook <- function()
 update_workbook <- function()
 {
   # Temporary file names used by the copying process
-  existing_temp_name <- "res\\old.xlsm"
-  new_temp_name <- "res\\new.xlsm"
+  existing_temp_name <- "res/old.xlsm"
+  new_temp_name <- "res/new.xlsm"
 
   # Copy the master workbook to the res directory
   if (!file.copy(master_workbook_location, new_temp_name, overwrite=TRUE))
   {
+    if (!dir.exists("res/shared"))
+    {
+      return("Unable to access shared folder.")
+    }
+    if (!file.exists(master_workbook_location))
+    {
+      return("Unable to access shared workbook.")
+    }
     return("Unable to copy master file.")
   }
 
