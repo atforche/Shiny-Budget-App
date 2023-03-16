@@ -11,7 +11,7 @@ function(input, output, session) {
   }
   else
   {
-    load(local_data_cache)
+    load(local_data_cache, globalenv())
     toastr_success("No new changes. Loaded stored workbook")
   }
   
