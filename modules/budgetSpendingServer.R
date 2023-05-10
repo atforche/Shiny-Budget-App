@@ -38,7 +38,7 @@ budget_spending_server <- function(id, select_range)
         
         budget_table <- budget_table %>%
           group_by(Month) %>%
-          summarize(Spending = sum(Total.Spent),
+          summarize(Spending = sum(Total.Debits),
                     Budget = sum(Amount))
       })
       

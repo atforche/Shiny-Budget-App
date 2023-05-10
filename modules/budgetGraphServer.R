@@ -32,8 +32,9 @@ budget_graph_server <- function(id, select_month)
                        {
                          # Calculate the different summary values
                          amount <- budget_table$Amount[budget_table$Name == budget_name][1]
-                         total_spent <- budget_table$Total.Spent[budget_table$Name == budget_name][1]
-                         monthly_remaining <- amount - total_spent
+                         total_debits <- budget_table$Total.Debits[budget_table$Name == budget_name][1]
+                         total_credits <- budget_table$Total.Credits[budget_table$Name == budget_name][1]
+                         monthly_remaining <- amount - total_debits
                          total_remaining <- budget_table$Remaining.Budget[budget_table$Name == budget_name][1]
                          
                          # Remove any existing popovers then create a new plotOutput with a popover
@@ -45,7 +46,8 @@ budget_graph_server <- function(id, select_month)
                          popify(plotOutput(ns(plot_name), height=25), 
                                 budget_name,
                                 HTML(str_interp(paste('Amount: ${label_dollar()(amount)}<br>',
-                                                      'Total Spent: ${label_dollar()(total_spent)}<br>',
+                                                      'Total Debits: ${label_dollar()(total_debits)}<br>',
+                                                      'Total Credits: ${label_dollar()(total_credits)}<br>',
                                                       'Monthly Remaining: <span class="${get_ui_color_for_budget(monthly_remaining, amount, budget_name, select_month())}">${label_dollar()(monthly_remaining)}</span><br>',
                                                       'Total Remaining: <span class="${get_ui_color_for_budget(total_remaining, amount, budget_name, select_month())}">${label_dollar()(total_remaining)}</span>', sep=""))),
                                 placement="right",
@@ -63,12 +65,12 @@ budget_graph_server <- function(id, select_month)
                        local({
                          local_budget_copy <- budget
                          plot_name <- clean_plot_name(local_budget_copy)
-                         budget_data <- budget_table %>% filter(Name == local_budget_copy) %>% mutate(Monthly.Remaining = Amount - Total.Spent)
+                         budget_data <- budget_table %>% filter(Name == local_budget_copy) %>% mutate(Monthly.Remaining = Amount - Total.Debits)
                          output[[plot_name]] <- renderPlot({
                            ggplot(budget_data,
                                   aes(
                                     # if we spent more than the budget, cap the bar at the budgeted amount so it displays properly
-                                    ifelse(any(budget_data$Total.Spent > budget_data$Amount), budget_data$Amount, budget_data$Total.Spent),
+                                    ifelse(any(budget_data$Total.Debits > budget_data$Amount), budget_data$Amount, budget_data$Total.Debits),
                                     str_pad(budget_data$Name, 20, side="right"),
                                     fill=budget_data$Name)) +
                              scale_fill_manual("legend", values = c(get_ui_color_for_budget(min(budget_data$Remaining.Budget[1], budget_data$Monthly.Remaining[1]), budget_data$Amount[1], budget_data$Name[1], select_month()))) +

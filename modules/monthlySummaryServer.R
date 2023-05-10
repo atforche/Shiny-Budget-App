@@ -1,4 +1,4 @@
-# Server functionality for the Spending Graph module
+# Server functionality for the Monthly Summary module
 monthly_summary_server <- function(id, select_month)
 {
   # Instantiate the server logic for this module
@@ -20,7 +20,8 @@ monthly_summary_server <- function(id, select_month)
       total_expenses <- reactive({
         transaction_table <- get_transaction_table() %>%
           filter(is_date_in_month(Date, get_current_month_as_date(select_month())),
-                 Category != 'Savings')
+                 Category != 'Savings',
+                 Type != 'Credit')
         sum(transaction_table$Amount)
       })
       
@@ -40,7 +41,7 @@ monthly_summary_server <- function(id, select_month)
         # Get how much we saved on fixed monthly budgets
         non_running_budget_table <- budget_table %>%
           filter(Type == 'Fixed') %>%
-          mutate(Monthly.Savings = Amount - Total.Spent)
+          mutate(Monthly.Savings = Amount - Total.Debits)
         
         # Get how much income we had compared to what we had budgeted
         total_budgeted_income <- sum(budget_table$Amount)
@@ -55,7 +56,7 @@ monthly_summary_server <- function(id, select_month)
         budget_table <- get_budget_table() %>%
           filter(is_date_in_month(Date, get_current_month_as_date(select_month()))) %>%
           filter(Type == "Rolling") %>%
-          mutate(Monthly.Change = Amount - Total.Spent)
+          mutate(Monthly.Change = Amount - Total.Debits + Total.Credits)
         
         sum(budget_table$Monthly.Change)
       })
@@ -66,7 +67,7 @@ monthly_summary_server <- function(id, select_month)
         budget_table <- get_budget_table() %>%
           filter(is_date_in_month(Date, get_current_month_as_date(select_month()))) %>%
           filter(Type == "Saving") %>%
-          mutate(Monthly.Change = Total.Spent)
+          mutate(Monthly.Change = Total.Credits - Total.Debits)
         
         sum(budget_table$Monthly.Change)
       })

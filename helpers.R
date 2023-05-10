@@ -49,11 +49,6 @@ get_ui_color_for_budget <- function(remaining, budget_amount, budget_name, selec
   {
     output_color <- "green"
   }
-    
-  if (budget_name == "Savings")
-  {
-    return(ifelse(output_color == "red", "green", ifelse(output_color == "green", "red", output_color)))
-  }
   return(output_color)
 }
 
