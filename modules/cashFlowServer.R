@@ -22,7 +22,8 @@ cash_flow_server <- function(id, select_range)
         # Get our transactions over the date range and summarize our spending by month
         transactions <- get_transaction_table() %>%
           filter(Date >= first_date(),
-                 Category != 'Savings') %>%
+                 Category != 'Savings',
+                 Type != 'Credit') %>%
           mutate(Month = floor_date(Date, 'month')) %>%
           group_by(Month) %>%
           summarize(Expenses = sum(Amount, na.rm=TRUE))
@@ -62,7 +63,8 @@ cash_flow_server <- function(id, select_range)
         transaction_table <- get_transaction_table() %>%
           filter(Date >= first_date(),
                  Category == "Savings") %>%
-          mutate(Month = floor_date(Date, 'month')) %>%
+          mutate(Month = floor_date(Date, 'month'),
+                 Amount = ifelse(Type == 'Debit', Amount * -1, Amount)) %>%
           group_by(Month) %>%
           summarize(Value = sum(Amount))
       })
@@ -82,7 +84,7 @@ cash_flow_server <- function(id, select_range)
           filter(Date >= first_date(),
                  Type == "Rolling") %>%
           mutate(Month = floor_date(Date, 'month'),
-                 Monthly.Change = Amount - Total.Spent) %>%
+                 Monthly.Change = Amount - Total.Debits + Total.Credits) %>%
           group_by(Month) %>%
           summarize(Value = sum(Monthly.Change))
       })
@@ -102,7 +104,7 @@ cash_flow_server <- function(id, select_range)
           filter(Date >= first_date(),
                  Type == "Saving") %>%
           mutate(Month = floor_date(Date, 'month'),
-                 Monthly.Change = Total.Spent) %>%
+                 Monthly.Change = Total.Credits - Total.Debits) %>%
           group_by(Month) %>%
           summarize(Value = sum(Monthly.Change))
       })

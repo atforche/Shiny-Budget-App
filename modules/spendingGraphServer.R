@@ -37,10 +37,12 @@ spending_graph_server <- function(id, select_month)
         # Grab the transactions for the needed months
         transaction_table <- get_transaction_table() %>%
           filter(is_date_in_month(Date, start_month),
-                 Category != "Savings")
+                 Category != "Savings",
+                 Type != "Credit")
         previous_transactions <- get_transaction_table() %>%
           filter(is_date_in_month(Date, start_previous_month),
-                 Category != "Savings")
+                 Category != "Savings",
+                 Type != "Credit")
                 
         # If the user selected a budget, only show that budget
         if (input$select_budget != "All") 
