@@ -15,18 +15,16 @@ budget_spending_server <- function(id, select_range)
       # Reactive variable to store all the budget names that appear over the date range
       all_budget_names <- reactive({
         budget_table <- get_budget_table() %>%
-          filter(Date >= first_date(),
-                 Name != "Savings")
+          filter(Date >= first_date())
         unique(budget_table$Name)
       })
       
       # Reactive variable to store the budget data to be included in the graph
       budget_spending <- reactive({
-        
+        req(input$select_budget)
         # Get the budget data
         budget_table <- get_budget_table() %>%
-          filter(Date >= first_date(),
-                 Name != "Savings") %>%
+          filter(Date >= first_date()) %>%
           mutate(Month = floor_date(Date, 'month'))
         
         # If the user hasn't selected "All", then filter to the given budget type
@@ -35,11 +33,18 @@ budget_spending_server <- function(id, select_range)
           budget_table <- budget_table %>% 
             filter(Name == input$select_budget)
         }
+        else
+        {
+          # Exclude any savings budgets when viewing all budgets
+          budget_table <- budget_table %>%
+            filter(Type != "Saving")
+        }
         
         budget_table <- budget_table %>%
           group_by(Month) %>%
-          summarize(Spending = sum(Total.Debits),
-                    Budget = sum(Amount))
+          summarize(Spending = sum(Vectorize(calculate_spending_toward_budget)(Type, Total.Debits, Total.Credits)),
+                    Budget = sum(Amount),
+                    Type = first(Type))
       })
       
       # Reactive variable to store the average budget spending to be displayed on the graph
@@ -68,16 +73,16 @@ budget_spending_server <- function(id, select_range)
                                                     "<b>Month:</b> ", Month,
                                                     "<br><b>Total Spending:</b> ", label_dollar()(Spending),
                                                     "<br><b>Total Budgeted:</b> ", label_dollar()(Budget),
-                                                    "<br><b>Difference:</b> <span style='color:", ifelse(Spending <= Budget,"green","red"), "'>", label_dollar()(Spending - Budget), "</span>",
+                                                    "<br><b>Difference:</b> <span style='color:", Vectorize(get_ui_color_for_budget)(Budget - Spending, Budget, Type, ""), "'>", label_dollar()(Spending - Budget), "</span>",
                                                     "<br>",
                                                     "<br><b>Average Spending:</b> ", label_dollar()(average_budget_spending()),
-                                                    "<br><b>Difference From Average:</b> <span style='color:", ifelse(Spending <= average_budget_spending(),"green","red"), "'>", label_dollar()(Spending - average_budget_spending()), "</span>",
+                                                    "<br><b>Difference From Average:</b> <span style='color:", Vectorize(get_ui_color_for_budget)(average_budget_spending() - Spending, average_budget_spending(), Type, ""), "'>", label_dollar()(Spending - average_budget_spending()), "</span>",
                                                     "</span>"),
-                                        fill=ifelse(Spending <= Budget, "positive", "negative")))
+                                        fill=Vectorize(get_ui_color_for_budget)(Budget - Spending, Budget, Type, "")))
           + geom_col()
           + geom_hline(yintercept=average_budget_spending())
           + scale_y_continuous(labels=label_dollar())
-          + scale_fill_manual(values=c("positive"="green2", "negative"="red2"))
+          + scale_fill_manual(values=c("green"="green2", "red"="red2"))
           + theme(legend.position = "none",
                   axis.title.y = element_blank()),
           tooltip="text") %>%

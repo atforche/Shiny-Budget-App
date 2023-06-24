@@ -15,6 +15,10 @@ get_current_month_as_date <- function(select_month)
 #' @return a decimal representing the current progress through the month
 get_progress_through_month <- function(select_month) 
 {
+  if (select_month == "")
+  {
+    return(1)
+  }
   # Get the applications current month and the real life date
   month <- get_current_month_as_date(select_month)
   current_date <- as.Date(now())
@@ -29,11 +33,11 @@ get_progress_through_month <- function(select_month)
 #'
 #' @param remaining remaining amount for the budget this month
 #' @param budget_amount total amount budgeted for a budget
-#' @param budget_name name of the budget
+#' @param budget_type type of the budget
 #' @param select_month current month selected in the select_month input
 #'
 #' @return the CSS class that should be used for the budget test
-get_ui_color_for_budget <- function(remaining, budget_amount, budget_name, select_month)
+get_ui_color_for_budget <- function(remaining, budget_amount, budget_type, select_month)
 {
   output_color <- ""
   progress_through_month <- get_progress_through_month(select_month)
@@ -49,7 +53,77 @@ get_ui_color_for_budget <- function(remaining, budget_amount, budget_name, selec
   {
     output_color <- "green"
   }
-  return(output_color)
+  return(get_ui_color_for_savings_budget(remaining, output_color, budget_type))
+}
+
+#' For a savings budget, we want the remaining amount to be negative. So invert
+#' the UI colors if the budget is a savings budget
+#'
+#' @param output_color the output color determined by get_ui_color_for_budget
+#' @param budget_type type of the budget
+#'
+#' @return the UI color for a budget, inverting the color if it's a savings budget
+get_ui_color_for_savings_budget <- function(remaining, output_color, budget_type)
+{
+  if (budget_type != "Saving" || output_color == "orange")
+  {
+    return(output_color)
+  }
+  if (output_color == "red" || remaining == 0)
+  {
+    return("green")
+  }
+  return("red")
+}
+
+#' Calculates the monthly remaining budget balance for a given budget
+#'
+#' @param budget_type type of the budget
+#' @param budget_amount budgeted amount for the particular budget
+#' @param total_debits total amount of debits applied to that budget
+#' @param total_credits total amount of credits applied to that budget
+#'
+#' @return the monthly remaining amount for this budget
+calculate_monthly_remaining_budget_balance <- function(budget_type, budget_amount, total_debits, total_credits)
+{
+  if (budget_type != "Saving")
+  {
+    return(budget_amount - total_debits)
+  }
+  return(budget_amount + total_debits - total_credits)
+}
+
+#' Determines if the total budget spending for the month has exceeded the budget
+#'
+#' @param budget_type type of the budget
+#' @param budget_amount budgeted amount for the particular budget
+#' @param total_debits total amount of debits applied to that budget
+#' @param total_credits total amount of credits applied to that budget
+#'
+#' @return whether the monthly spending has exceeded the budget amount
+has_spending_exceeded_budget <- function(budget_type, budget_amount, total_debits, total_credits)
+{
+  if (budget_type != "Saving")
+  {
+    return(total_debits > budget_amount)
+  }
+  return(total_credits > (budget_amount + total_debits))
+}
+
+#' Calculates the total amount of spending toward the budget
+#'
+#' @param budget_type type of the budget
+#' @param total_debits total amount of debits applied to that budget
+#' @param total_credits total amount of credits applied to that budget
+#'
+#' @return the total spending toward the budget
+calculate_spending_toward_budget <- function(budget_type, total_debits, total_credits)
+{
+  if (budget_type != "Saving")
+  {
+    return(total_debits)
+  }
+  return(total_credits - total_debits)
 }
 
 #' Performs cleanup on the plot names for any dynamic plots

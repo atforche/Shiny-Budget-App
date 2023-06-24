@@ -11,7 +11,7 @@ cash_flow_ui <- function(id)
     
     # Select which metric to view
     selectInput(ns("cash_flow_type"), "Select Metric to View", 
-                c("Net Income", "Actual Savings", "Change In Reserve Balance", "Change In Savings Balance")),
+                c("Net Income", "Additional Savings", "Change In Reserve Balance", "Change In Savings Balance")),
     
     # Plotly output to display the cash flow graph
     plotlyOutput(ns("cash_flow_graph"))

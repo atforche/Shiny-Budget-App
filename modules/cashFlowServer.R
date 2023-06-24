@@ -57,23 +57,43 @@ cash_flow_server <- function(id, select_range)
       })
       
       # Reactive variable to store the actual savings across multiple months in a given range
-      actual_savings <- reactive({
+      additional_savings <- reactive({
         
-        # Get the transactions over the date range
-        transaction_table <- get_transaction_table() %>%
-          filter(Date >= first_date(),
-                 Category == "Savings") %>%
-          mutate(Month = floor_date(Date, 'month'),
-                 Amount = ifelse(Type == 'Debit', Amount * -1, Amount)) %>%
+        # Determine how much income was budgeted each month
+        budget_table <- get_budget_table() %>%
+          filter(Date >= first_date()) %>%
+          mutate(Month = floor_date(Date, 'month')) %>%
           group_by(Month) %>%
-          summarize(Value = sum(Amount))
+          summarize(Total.Budgeted = sum(Amount))
+        
+        # Determine how much income was actually recorded each month
+        income_table <- get_income_table() %>%
+          filter(Date >= first_date()) %>%
+          mutate(Month = floor_date(Date, 'month')) %>%
+          group_by(Month) %>%
+          summarize(Total.Income = sum(Amount))
+        
+        # Get how much we saved on fixed monthly budgets each month
+        non_running_budget_table <- get_budget_table() %>%
+          filter(Date >= first_date(), 
+                 Type == 'Fixed') %>%
+          mutate(Month = floor_date(Date, 'month'), 
+                 Monthly.Savings = Amount - Total.Debits) %>%
+          group_by(Month) %>%
+          summarize(Savings = sum(Monthly.Savings))
+        
+        # Join the tables together and calculate the additional savings
+        additional_savings <- budget_table %>%
+          left_join(income_table, by='Month') %>%
+          left_join(non_running_budget_table, by='Month') %>%
+          mutate(Value = Savings + Total.Income - Total.Budgeted)
       })
       
       # Reactive variable to store the average actual savings across the months in the given range
-      average_actual_savings <- reactive({
+      average_additional_savings <- reactive({
         
         # Calculate the average actual savings for every month except the current month
-        average_savings <- actual_savings() %>%
+        average_savings <- additional_savings() %>%
           filter(!is_date_in_month(Month, as.Date(now())))
         average <- mean(average_savings$Value)
       })
@@ -124,9 +144,9 @@ cash_flow_server <- function(id, select_range)
         {
           return(net_income())
         }
-        else if (input$cash_flow_type == "Actual Savings")
+        else if (input$cash_flow_type == "Additional Savings")
         {
-          return(actual_savings())
+          return(additional_savings())
         }
         else if (input$cash_flow_type == "Change In Reserve Balance")
         {
@@ -144,9 +164,9 @@ cash_flow_server <- function(id, select_range)
         {
           return(average_net_income())
         }
-        else if (input$cash_flow_type == "Actual Savings")
+        else if (input$cash_flow_type == "Additional Savings")
         {
-          return(average_actual_savings())
+          return(average_additional_savings())
         }
         else if (input$cash_flow_type == "Change In Reserve Balance")
         {
