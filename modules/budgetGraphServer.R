@@ -31,10 +31,11 @@ budget_graph_server <- function(id, select_month)
                        plot_output_list <- lapply(unique(budget_table$Name), function(budget_name)
                        {
                          # Calculate the different summary values
+                         budget_type <- budget_table$Type[budget_table$Name == budget_name][1]
                          amount <- budget_table$Amount[budget_table$Name == budget_name][1]
                          total_debits <- budget_table$Total.Debits[budget_table$Name == budget_name][1]
                          total_credits <- budget_table$Total.Credits[budget_table$Name == budget_name][1]
-                         monthly_remaining <- amount - total_debits
+                         monthly_remaining <- calculate_monthly_remaining_budget_balance(budget_type, amount, total_debits, total_credits)
                          total_remaining <- budget_table$Remaining.Budget[budget_table$Name == budget_name][1]
                          
                          # Remove any existing popovers then create a new plotOutput with a popover
@@ -48,8 +49,8 @@ budget_graph_server <- function(id, select_month)
                                 HTML(str_interp(paste('Amount: ${label_dollar()(amount)}<br>',
                                                       'Total Debits: ${label_dollar()(total_debits)}<br>',
                                                       'Total Credits: ${label_dollar()(total_credits)}<br>',
-                                                      'Monthly Remaining: <span class="${get_ui_color_for_budget(monthly_remaining, amount, budget_name, select_month())}">${label_dollar()(monthly_remaining)}</span><br>',
-                                                      'Total Remaining: <span class="${get_ui_color_for_budget(total_remaining, amount, budget_name, select_month())}">${label_dollar()(total_remaining)}</span>', sep=""))),
+                                                      'Monthly Remaining: <span class="${get_ui_color_for_budget(monthly_remaining, amount, budget_type, select_month())}">${label_dollar()(monthly_remaining)}</span><br>',
+                                                      'Total Remaining: <span class="${get_ui_color_for_budget(total_remaining, amount, budget_type, select_month())}">${label_dollar()(total_remaining)}</span>', sep=""))),
                                 placement="right",
                                 options=list(container="body"))
                        })
@@ -65,15 +66,15 @@ budget_graph_server <- function(id, select_month)
                        local({
                          local_budget_copy <- budget
                          plot_name <- clean_plot_name(local_budget_copy)
-                         budget_data <- budget_table %>% filter(Name == local_budget_copy) %>% mutate(Monthly.Remaining = Amount - Total.Debits)
+                         budget_data <- budget_table %>% filter(Name == local_budget_copy) %>% mutate(Monthly.Remaining = calculate_monthly_remaining_budget_balance(Type, Amount, Total.Debits, Total.Credits))
                          output[[plot_name]] <- renderPlot({
                            ggplot(budget_data,
                                   aes(
                                     # if we spent more than the budget, cap the bar at the budgeted amount so it displays properly
-                                    ifelse(any(budget_data$Total.Debits > budget_data$Amount), budget_data$Amount, budget_data$Total.Debits),
+                                    ifelse(has_spending_exceeded_budget(budget_data$Type[1], budget_data$Amount[1], budget_data$Total.Debits[1], budget_data$Total.Credits[1]), budget_data$Amount, Vectorize(calculate_spending_toward_budget)(budget_data$Type, budget_data$Total.Debits, budget_data$Total.Credits)),
                                     str_pad(budget_data$Name, 20, side="right"),
                                     fill=budget_data$Name)) +
-                             scale_fill_manual("legend", values = c(get_ui_color_for_budget(min(budget_data$Remaining.Budget[1], budget_data$Monthly.Remaining[1]), budget_data$Amount[1], budget_data$Name[1], select_month()))) +
+                             scale_fill_manual("legend", values = c(get_ui_color_for_budget(min(budget_data$Remaining.Budget[1], budget_data$Monthly.Remaining[1]), budget_data$Amount[1], budget_data$Type[1], select_month()))) +
                              xlim(0, budget_data$Amount[1]) +
                              geom_bar(stat="identity") +
                              geom_vline(xintercept = budget_data$Amount[1] * get_progress_through_month(select_month())) + # place a horizontal line at our approximate progress through the month
