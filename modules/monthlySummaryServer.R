@@ -117,7 +117,7 @@ monthly_summary_server <- function(id, select_month)
       
       # Reactive variable to store the expected amount of reserve cash at for this month
       expected_reserve_cash <- reactive({
-        base_reserve_balance <- 5000
+        base_reserve_balance <- 7500
         budget_table <- get_budget_table() %>%
           filter(is_date_in_month(Date, get_current_month_as_date(select_month())),
                  Type == "Rolling")
@@ -215,13 +215,13 @@ monthly_summary_server <- function(id, select_month)
       
       # Populate the spending cash display
       output$spending_cash <- renderText({
-        spending_threshold <- 5000
+        spending_threshold <- 7500
         HTML(str_interp("Spending Balance: <span ${ifelse(spending_cash() < spending_threshold, 'class=\"red\"', '')}>${label_dollar()(spending_cash())}</span>"))
       })
       
       # Populate the reserve cash display
       output$reserve_cash <- renderText({
-        reserve_threshold <- 5000
+        reserve_threshold <- 7500
         HTML(str_interp("Reserve Balance: <span ${ifelse(reserve_cash() < reserve_threshold, 'class=\"red\"', '')}>${label_dollar()(reserve_cash())} (${label_dollar()(expected_reserve_cash())})</span>"))
       })
       
