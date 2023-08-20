@@ -34,7 +34,7 @@ cash_flow_server <- function(id, select_range)
           filter(Date >= first_date()) %>%
           mutate(Month = floor_date(Date, 'month')) %>%
           group_by(Month) %>%
-          summarize(Income = sum(Amount, na.rm=TRUE))
+          summarize(Income = sum(Net.Income, na.rm=TRUE))
         income[is.na(income)] <- 0
         
         # Join the two tables together
@@ -71,7 +71,7 @@ cash_flow_server <- function(id, select_range)
           filter(Date >= first_date()) %>%
           mutate(Month = floor_date(Date, 'month')) %>%
           group_by(Month) %>%
-          summarize(Total.Income = sum(Amount))
+          summarize(Total.Income = sum(Net.Income))
         
         # Get how much we saved on fixed monthly budgets each month
         non_running_budget_table <- get_budget_table() %>%

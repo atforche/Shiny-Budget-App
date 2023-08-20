@@ -13,7 +13,7 @@ monthly_summary_server <- function(id, select_month)
       total_income <- reactive({
         income_table <- get_income_table() %>%
           filter(is_date_in_month(Date, get_current_month_as_date(select_month())))
-        sum(income_table$Amount)
+        sum(income_table$Net.Income)
       })
       
       # Reactive variable to store the months total expenses
@@ -45,7 +45,7 @@ monthly_summary_server <- function(id, select_month)
         
         # Get how much income we had compared to what we had budgeted
         total_budgeted_income <- sum(budget_table$Amount)
-        total_actual_income <- sum(income_table$Amount)
+        total_actual_income <- sum(income_table$Net.Income)
 
         sum(non_running_budget_table$Monthly.Savings) + (total_actual_income - total_budgeted_income)
       })
