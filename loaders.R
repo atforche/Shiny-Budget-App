@@ -349,11 +349,13 @@ load_excel_table <- function(table_name, sheet_name)
     table_rows <- gsub("[^0-9.]", "", table_range_refs)
     table_cols <- convertFromExcelRef(table_range_refs)
     
-    return(as.data.table(read.xlsx(get_workbook(), 
-                     sheet_name, 
-                     detectDates=TRUE,
-                     rows=table_rows[1]:table_rows[2], 
-                     cols=table_cols[1]:table_cols[2])))
+    excel_table <- as.data.table(read.xlsx(get_workbook(), 
+                                     sheet_name, 
+                                     detectDates=TRUE,
+                                     rows=table_rows[1]:table_rows[2], 
+                                     cols=table_cols[1]:table_cols[2])) %>%
+      filter(!is.na(.[[1]]))
+    return(excel_table)
   }
   stop(str_interp("Specified table \"${table_name}\" not found on sheet \"${sheet_name}\""))
 }
