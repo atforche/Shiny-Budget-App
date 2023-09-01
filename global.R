@@ -1,5 +1,5 @@
 # Set the working directory
-setwd("C:\\Users\\atfor\\OneDrive\\Desktop\\Budget_Shiny_App")
+setwd("C:\\Code Projects\\Shiny Budget App")
 
 # Expected locations for the Excel workbooks
 master_workbook_location <- "C:\\Users\\atfor\\OneDrive\\Desktop\\Shared\\Monthly Budget Tracking.xlsm"
