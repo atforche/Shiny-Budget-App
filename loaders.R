@@ -302,6 +302,18 @@ load_budget_table <- function()
         mutate(Date = ymd(str_interp("${sheet_name[1:4]}/${sheet_name[6:7]}/01"))) %>%
         select(Date, everything())
       
+      saving_budget_table_name <- paste("_", gsub("-", "_", sheet_name), "\\Saving_Budgets", sep="")
+      if (is_table_in_sheet(saving_budget_table_name, sheet_name))
+      {
+        saving_budgets_table <- load_excel_table(saving_budget_table_name, sheet_name) %>%
+          mutate(Date = ymd(str_interp("${sheet_name[1:4]}/${sheet_name[6:7]}/01"))) %>%
+          # Add in missing columns found in the normal budget table but not the savings budget table
+          mutate(Type = "Saving", "Rollover.From.Last.Month" = 0, "Override.Rollover.Amount" = 0) %>%
+          select(Date, everything())
+        
+        budget_table <- rbindlist(list(budget_table, saving_budgets_table), use.names=TRUE)
+      }
+      
       # Populate or concatenate the new transactions onto the existing transactions
       if (nrow(budget_table) == 0)
       {
@@ -331,6 +343,19 @@ get_budget_table <- function()
     return(loaded_budget_table)
   }
   stop("Budget table is not loaded")
+}
+
+
+#' Determines if the provided Excel table name appears in the given sheet
+#'
+#' @param table_name name of the Excel table
+#' @param sheet_name name of the worksheet the table may be found on
+#'
+#' @return True if the table appears on the sheet, false otherwise
+is_table_in_sheet <- function(table_name, sheet_name)
+{
+  tables <- getTables(get_workbook(), sheet=sheet_name)
+  return(table_name %in% tables)
 }
 
 #' Loads a named Excel table as a data.table
