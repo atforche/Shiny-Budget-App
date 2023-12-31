@@ -54,6 +54,12 @@ budget_spending_server <- function(id, select_range)
         average_spending <- budget_spending() %>%
           filter(!is_date_in_month(Month, as.Date(now())))
         average <- mean(average_spending$Spending)
+        # Handle the case where we only have a single month of spending
+        if (is.nan(average))
+        {
+          average <- 0
+        }
+        return(average)
       })
       
       # Populate the budget spending text label
