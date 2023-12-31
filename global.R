@@ -1,8 +1,8 @@
 # Set the working directory
-setwd("C:\\Code\\Shiny Budget App")
+setwd("C:\\Code Projects\\Shiny Budget App")
 
 # Expected locations for the Excel workbooks
-master_workbook_location <- "C:\\Users\\atfor\\OneDrive\\Desktop\\Shared\\Monthly Budget Tracking - New.xlsm"
+master_workbook_location <- "C:\\Users\\atfor\\OneDrive\\Desktop\\Shared\\Monthly Budget Tracking.xlsm"
 local_workbook_location <- "res\\data.xlsm"
 
 # Paths to the local caches
