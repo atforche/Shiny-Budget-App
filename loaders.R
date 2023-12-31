@@ -240,8 +240,7 @@ load_income_table <- function()
     if (is_data_sheet(sheet_name))
     {
       table_name <- paste("_", gsub("-", "_", sheet_name), "\\Actual_Income", sep="")
-      income_table <- load_excel_table(table_name, sheet_name) %>%
-        select(Date, Net.Income)
+      income_table <- load_excel_table(table_name, sheet_name)
       
       # Populate or concatenate the new transactions onto the existing transactions
       if (nrow(income_table) == 0)
